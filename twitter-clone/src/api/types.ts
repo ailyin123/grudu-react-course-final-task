@@ -8,3 +8,8 @@ export interface LoginData {
   email: string;
   password: string;
 }
+
+export interface TweetData {
+  author_id: string;
+  text: string;
+}

@@ -2,7 +2,6 @@ import { useState, SyntheticEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as EmailValidator from 'email-validator';
 
-
 import { signUpUser } from '../../api/signUpUser';
 
 interface ErrorType {
