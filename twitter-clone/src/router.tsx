@@ -1,10 +1,10 @@
-import React from 'react';
 import {
   createBrowserRouter,
-  Link,
 } from 'react-router-dom';
+import Login from './pages/login/Login';
 import Signup from './pages/signup/Signup';
 import Tweets from './pages/tweets/Tweets';
+import Logout from './pages/logout/Logout';
 
 export default createBrowserRouter([
   {
@@ -14,5 +14,13 @@ export default createBrowserRouter([
   {
     path: '/signup',
     element: <Signup />
+  },
+  {
+    path: '/login',
+    element: <Login />
+  },
+  {
+    path: '/logout',
+    element: <Logout />
   }
 ]);

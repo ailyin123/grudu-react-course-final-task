@@ -1,5 +1,8 @@
-import React, { useEffect, useState, SyntheticEvent, ChangeEvent } from 'react';
+import { useState, SyntheticEvent, ChangeEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as EmailValidator from 'email-validator';
+
+
 import { signUpUser } from '../../api/signUpUser';
 
 interface ErrorType {
@@ -9,6 +12,8 @@ interface ErrorType {
 }
 
 const Signup = () => {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     email: '',
     name: '',
@@ -19,7 +24,7 @@ const Signup = () => {
     email: null,
     name: null,
     password: null
-  })
+  });
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [event.target.name]: event.target.value });
@@ -58,7 +63,9 @@ const Signup = () => {
       try {
         const result = await signUpUser(form);
 
-        
+        localStorage.setItem('authId', result.id);
+
+        navigate('/');
       } catch (e) {
         alert(e);
       }

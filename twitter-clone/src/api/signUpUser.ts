@@ -6,7 +6,11 @@ export const signUpUser = async (data: UserData) => {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify({
+      id: data.email,
+      name: data.name,
+      password: data.password
+    })
   });
 
   if (result.ok) {
