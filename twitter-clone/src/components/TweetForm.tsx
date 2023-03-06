@@ -1,4 +1,5 @@
 import { ChangeEvent, SyntheticEvent, useState } from 'react';
+import { Box, Grid, TextField, Button } from '@mui/material';
 
 interface TweetFormProps {
   onAddTweet: (tweetText: string) => void;
@@ -29,15 +30,22 @@ const TweetForm = ({ onAddTweet }: TweetFormProps) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <textarea
-        value={tweetText}
-        onChange={handleChange}
-        placeholder="What's happenning?"
-      />
-      <button type="submit">Tweet</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </form>
+    <Box my={3}>
+      <form onSubmit={handleSubmit}>
+        <TextField
+          value={tweetText}
+          onChange={handleChange}
+          multiline
+          label="What's happenning?"
+          fullWidth
+          error={!!error}
+          helperText={error}
+        />
+        <Grid container mt={2} justifyContent="right">
+          <Button type="submit" variant="contained">Tweet</Button>
+        </Grid>
+      </form>
+    </Box>
   );
 }
 

@@ -1,7 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import sanitize from 'sanitize-html';
+import { Container, Card, CardHeader, CardContent, Avatar, Box, Typography } from '@mui/material';
 
+import stringAvatar from '../../utils/stringAvatar';
 import { addTweet } from '../../api/addTweet';
 import { getTweets } from '../../api/getTweets';
 import { getUsers } from '../../api/getUsers';
@@ -55,18 +57,29 @@ const Tweets = () => {
   if (isLoading) return <h1>Loading...</h1>
 
   return (
-    <div>
+    <Container sx={{ width: '600px' }}>
       <TweetForm onAddTweet={handleAddTweet} />
       {tweets.length > 0 ? 
-        tweets.map(tweet => 
-          <div key={tweet.id}>
-            <p>{users.find(user => user.id === tweet.author_id)?.name}</p>
-            <div dangerouslySetInnerHTML={{ __html: sanitize(tweet.text) }}/>
-          </div>
+        tweets.map(tweet => {
+          const tweetAuthor = users.find(user => user.id === tweet.author_id);
+
+          return (
+            <Box mb={2} key={tweet.id}>
+              <Card variant="outlined">
+                <CardHeader
+                  avatar={<Avatar {...stringAvatar(tweetAuthor!.name)} />}
+                  title={tweetAuthor!.name}
+                />
+                <CardContent>
+                  <Typography dangerouslySetInnerHTML={{ __html: sanitize(tweet.text) }}/>
+                </CardContent>
+              </Card>
+            </Box>
+          )}
         ) :
         <h1>No tweets</h1>
       }
-    </div>
+    </Container>
   );
 }
 
