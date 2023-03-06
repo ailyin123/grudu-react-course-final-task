@@ -1,20 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import sanitize from 'sanitize-html';
-import { addTweet } from '../../api/addTweet';
 
+import { addTweet } from '../../api/addTweet';
 import { getTweets } from '../../api/getTweets';
 import { getUsers } from '../../api/getUsers';
+import { UserContext } from '../../App';
 import TweetForm from '../../components/TweetForm';
 import { Tweet, User } from './types';
 
 const Tweets = () => {
+  const { user } = useContext(UserContext);
   const [tweets, setTweets] = useState<Tweet[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-  const isAuthenticated = localStorage.getItem('authId');
 
   const handleAddTweet = (tweetText: string) => {
     (async () => {
@@ -34,7 +34,7 @@ const Tweets = () => {
   }
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!user) {
       navigate('/login');
 
       return;

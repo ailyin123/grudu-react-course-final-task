@@ -1,23 +1,46 @@
-import React from 'react';
-import { Container, Box, AppBar, Toolbar, Typography, Button} from '@mui/material';
+import React, { createContext, useEffect, useState } from 'react';
+import { Container, Box } from '@mui/material';
+
+import AppHeader from './components/AppHeader';
+import { getUser } from './api/getUser';
+
+export const UserContext = createContext<{ user: any, setUser: any}>({
+  user: null,
+  setUser: null
+});
 
 const App = ({ children }: { children: React.ReactNode}) => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const auth = localStorage.getItem('authId');
+
+    if (auth) {
+      (async () => {
+        try {
+          const result = await getUser(auth);
+
+          setUser(result);
+        } catch (e) {
+          if (e instanceof Error) {
+            console.log(e.message);
+          }
+        }
+      })();
+    } else {
+      setUser(null);
+    }
+  }, []);
+
   return (
-    <Container sx={{ height: '100vh' }}>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Another Twitter Clone
-            </Typography>
-            <Button color="inherit">Login</Button>
-          </Toolbar>
-        </AppBar>
-      </Box>
-      <Box height="100%">
-        {children}
-      </Box>
-    </Container>
+    <UserContext.Provider value={{ user, setUser }}>
+      <Container sx={{ height: '100vh' }} disableGutters>
+        <AppHeader />
+        <Box height="100%">
+          {children}
+        </Box>
+      </Container>
+    </UserContext.Provider>
   );
 }
 

@@ -1,7 +1,14 @@
+import { useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
+import { UserContext } from '../../App';
 
 const Logout = () => {
-  localStorage.removeItem('authId');
+  const { setUser } = useContext(UserContext);
+
+  useEffect(() => {
+    setUser(null);
+    localStorage.removeItem('authId');
+  }, []);
 
   return <Navigate to="/login" />;
 }

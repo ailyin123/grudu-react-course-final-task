@@ -1,8 +1,9 @@
-import { useState, SyntheticEvent, ChangeEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, SyntheticEvent, ChangeEvent, useContext } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { Grid, Typography, Card, CardContent, TextField, Button, Snackbar, Alert, Link } from '@mui/material';
 
 import { loginUser } from '../../api/loginUser';
+import { UserContext } from '../../App';
 
 interface ErrorType {
   email: string | null;
@@ -11,6 +12,8 @@ interface ErrorType {
 
 const Login = () => {
   const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
+
   const [form, setForm] = useState({
     email: '',
     password: ''
@@ -58,7 +61,15 @@ const Login = () => {
       try {
         const result = await loginUser(form);
 
+        if (result.password !== form.password) {
+          setError('Invalid email or password');
+          setOpen(true);
+
+          return;
+        }
+
         localStorage.setItem('authId', result.id);
+        setUser(result);
         navigate('/');
       } catch (e) {
         if (e instanceof Error) {
@@ -70,7 +81,9 @@ const Login = () => {
   }
 
   return (
-    <Grid container height="100%" alignItems="center" justifyContent="center">
+    user ? 
+      <Navigate to="/" /> : 
+      <Grid container height="100%" alignItems="center" justifyContent="center">
       <Grid item>
         <Card sx={{ width: '400px', marginBottom: '12px' }} variant="outlined">
           <CardContent>
@@ -125,7 +138,6 @@ const Login = () => {
         </Typography>
       </Grid>
     </Grid>
-
   );
 }
 

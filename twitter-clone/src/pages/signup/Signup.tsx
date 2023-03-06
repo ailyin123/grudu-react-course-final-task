@@ -1,9 +1,10 @@
-import { useState, SyntheticEvent, ChangeEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, SyntheticEvent, ChangeEvent, useContext } from 'react';
+import { useNavigate, Navigate } from 'react-router-dom';
 import * as EmailValidator from 'email-validator';
 import { Grid, Typography, Card, CardContent, TextField, Button, Snackbar, Alert, Link } from '@mui/material';
 
 import { signUpUser } from '../../api/signUpUser';
+import { UserContext } from '../../App';
 
 interface ErrorType {
   email: string | null;
@@ -13,6 +14,7 @@ interface ErrorType {
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
 
   const [form, setForm] = useState({
     email: '',
@@ -71,6 +73,7 @@ const Signup = () => {
         const result = await signUpUser(form);
 
         localStorage.setItem('authId', result.id);
+        setUser(result);
 
         navigate('/');
       } catch (e) {
@@ -83,6 +86,8 @@ const Signup = () => {
   }
 
   return (
+    user ?
+    <Navigate to="/" /> :
     <Grid container height="100%" alignItems="center" justifyContent="center">
       <Grid item>
         <Card sx={{ width: '400px', marginBottom: '12px' }} variant="outlined">
