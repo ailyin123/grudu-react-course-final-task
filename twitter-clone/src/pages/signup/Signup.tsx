@@ -1,6 +1,7 @@
 import { useState, SyntheticEvent, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as EmailValidator from 'email-validator';
+import { Grid, Typography, Card, CardContent, TextField, Button, Snackbar, Alert, Link } from '@mui/material';
 
 import { signUpUser } from '../../api/signUpUser';
 
@@ -19,14 +20,21 @@ const Signup = () => {
     password: ''
   });
 
-  const [errors, setErrors] = useState<ErrorType>({
+  const [formErrors, setFormErrors] = useState<ErrorType>({
     email: null,
     name: null,
     password: null
   });
 
+  const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [event.target.name]: event.target.value });
+  }
+
+  const handleClose = () => {
+    setOpen(false);
   }
 
   const handleSubmit = (event: SyntheticEvent) => {
@@ -38,7 +46,7 @@ const Signup = () => {
       password: null
     }
 
-    setErrors(errors);
+    setFormErrors(errors);
 
     if (!EmailValidator.validate(form.email)) {
       errors = { ...errors, email: 'Invalid email' };
@@ -53,7 +61,7 @@ const Signup = () => {
     }
 
     if (errors.email || errors.name || errors.password) {
-      setErrors(errors);
+      setFormErrors(errors);
 
       return;
     }
@@ -66,36 +74,82 @@ const Signup = () => {
 
         navigate('/');
       } catch (e) {
-        alert(e);
+        if (e instanceof Error) {
+          setError(e.message);
+          setOpen(true);
+        }
       }
     })();
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>
-          Email
-          <input type="text" name="email" onChange={handleChange} value={form.email} />
-          {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
-        </label>
-      </div>
-      <div>
-        <label>
-          Full name
-          <input type="text" name="name" onChange={handleChange} value={form.name} />
-          {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
-        </label>
-      </div>
-      <div>
-        <label>
-          Password
-          <input type="password" name="password" onChange={handleChange} value={form.password} />
-          {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
-        </label>
-      </div>
-      <button type="submit">Submit</button>
-    </form>
+    <Grid container height="100%" alignItems="center" justifyContent="center">
+      <Grid item>
+        <Card sx={{ width: '400px', marginBottom: '12px' }} variant="outlined">
+          <CardContent>
+            <Typography align="center">Sign up</Typography>
+            <form onSubmit={handleSubmit}>
+            <TextField
+                name="email"
+                label="Email"
+                variant="outlined"
+                size="small"
+                onChange={handleChange}
+                value={form.email}
+                margin="dense"
+                fullWidth
+                error={!!formErrors.email}
+                helperText={formErrors.email}
+              />
+              <TextField
+                name="name"
+                label="Full name"
+                variant="outlined"
+                size="small"
+                onChange={handleChange}
+                margin="dense"
+                value={form.name}
+                fullWidth
+                error={!!formErrors.name}
+                helperText={formErrors.name}
+              />
+              <TextField
+                name="password"
+                type="password"
+                label="Password"
+                variant="outlined"
+                size="small"
+                onChange={handleChange}
+                value={form.password}
+                margin="dense"
+                fullWidth
+                error={!!formErrors.password}
+                helperText={formErrors.password}
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{ marginTop: '10px' }}
+              >
+                Submit
+              </Button>
+            </form>
+            <Snackbar
+              open={open}
+              autoHideDuration={2000}
+              onClose={handleClose}
+            >
+              <Alert severity="error" sx={{ width: '100%' }}>
+                {error}
+              </Alert>
+            </Snackbar>
+          </CardContent>
+        </Card>
+        <Typography align="center">
+          Already have an account? <Link href="/login">Log in</Link>
+        </Typography>
+      </Grid>
+    </Grid>
   );
 }
 

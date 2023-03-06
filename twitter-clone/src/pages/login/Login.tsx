@@ -4,15 +4,20 @@ import { Grid, Typography, Card, CardContent, TextField, Button, Snackbar, Alert
 
 import { loginUser } from '../../api/loginUser';
 
+interface ErrorType {
+  email: string | null;
+  password: string | null;
+}
+
 const Login = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     email: '',
     password: ''
   });
-  const [formErrors, setFormErrors] = useState({
-    email: '',
-    password: '',
+  const [formErrors, setFormErrors] = useState<ErrorType>({
+    email: null,
+    password: null,
   });
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
@@ -27,9 +32,10 @@ const Login = () => {
 
   const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
-    let errors = {
-      email: '',
-      password: '',
+
+    let errors: ErrorType = {
+      email: null,
+      password: null,
     }
 
     setFormErrors(errors);
@@ -77,7 +83,7 @@ const Login = () => {
                 size="small"
                 onChange={handleChange}
                 value={form.email}
-                margin="normal"
+                margin="dense"
                 fullWidth
                 error={!!formErrors.email}
                 helperText={formErrors.email}
@@ -88,6 +94,7 @@ const Login = () => {
                 label="Password"
                 variant="outlined"
                 size="small"
+                margin="dense"
                 onChange={handleChange}
                 value={form.password}
                 fullWidth
