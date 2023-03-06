@@ -55,8 +55,8 @@ const Login = () => {
         localStorage.setItem('authId', result.id);
         navigate('/');
       } catch (e) {
-        if (e instanceof Error && e.message === 'NotFound') {
-          setError('Invalid username or password');
+        if (e instanceof Error) {
+          setError(e.message);
           setOpen(true);
         }
       }
